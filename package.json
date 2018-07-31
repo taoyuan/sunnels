@@ -1,0 +1,44 @@
+{
+  "name": "sunnels",
+  "version": "0.1.0",
+  "description": "sunnels",
+  "license": "MIT",
+  "repository": "",
+  "author": "",
+  "keywords": [
+    "reverse",
+    "proxy",
+    "tunnel",
+    "tcp"
+  ],
+  "bin": {
+    "sunnels": "bin/sunnels.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
+  "scripts": {
+    "clean": "rimraf lib",
+    "build": "npm run clean && echo Using TypeScript && tsc --version && tsc --pretty",
+    "test": "npm run build && mocha --require ts-node/register --recursive \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "commander": "^2.16.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.4",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.5.4",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
+    "rimraf": "^2.6.2",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
