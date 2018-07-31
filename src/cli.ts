@@ -1,34 +1,26 @@
-import * as program from "commander";
+import * as prog from "caporal";
 import {createTcpServer} from "./server";
 
 const pkg = require("../package.json");
 
 export function run(argv) {
-  program
-    .usage("[options]")
+  prog
     .version(pkg.version)
-    .option("-r, --relayPort <n>", "Relay port number", parseInt)
-    .option("-s, --servicePort <n>", "Internet port number", parseInt)
-    .option("-h, --hostname <host>", "Name or IP address of host")
+    .description('Start sunnel server')
+    .option("-r, --relay-port <relay-port>", "Relay port number", prog.INT, 9000, true)
+    .option("-s, --service-port <service-port>", "Internet port number", prog.INT, undefined, true)
+    .option("-h, --hostname [hostname]", "Name or IP address of host")
     .option("-k, --secret [key]", "Secret key required to be sent by relay client")
-    .option("-t, --tls [both]", "Use TLS", false)
-    .option("-c, --pfx [file]", "Private key file", "cert.pfx")
-    .option("-p, --passphrase [value]", "Passphrase to access private key file", "abcd")
-    .parse(argv);
+    .option("-t, --tls [both]", "Use TLS", undefined, false)
+    .option("-c, --pfx [file]", "Private key file", prog.STRING, "cert.pfx")
+    .option("-p, --passphrase [value]", "Passphrase to access private key file", prog.STRING, "abcd")
+    .action((args, opts) => {
+      const server = createTcpServer(opts.relayPort, opts.servicePort, opts);
 
-  const options = {
-    hostname: program.hostname,
-    secret: program.secret,
-    tls: program.tls,
-    pfx: program.pfx,
-    passphrase: program.passphrase
-  };
+      process.on("SIGINT", () => {
+        server.end();
+      });
+    });
 
-  const server = createTcpServer(program.relayPort, program.servicePort, options);
-
-  process.on("SIGINT", () => {
-    server.end();
-  });
-
-  return server;
+  prog.parse(argv);
 }
